@@ -7,6 +7,8 @@ var Route = ReactRouter.Route;
 var Navigation = ReactRouter.Navigation;
 var createBrowserHistory = require('history/lib/createBrowserHistory');
 
+var helper = require('./helpers.js');
+
 var App = React.createClass({
 
   render: function() {
@@ -54,26 +56,27 @@ var Inventory = React.createClass({
   }
 });
 
-var StorePicker = React.createClass({
-
-  render: function() {
-    return (
-      <form className='store-selector'>
-        <h2>Please Enter A Store</h2>
-        <input type="text" ref="storeId" />
-        <input type='submit' />
-      </form>
-    )
-  }
-});
-
 var NotFound = React.createClass({
   render: function() {
     return (
       <h1>Not Found !!</h1>
     );
   }
-})
+});
+
+var StorePicker = React.createClass({
+
+  render: function() {
+    return (
+      <form className='store-selector'>
+        <h2>Please Enter A Store</h2>
+        <input type="text" ref="storeId" defaultValue={helper.getFunName()} />
+        <input type='submit' />
+      </form>
+    )
+  }
+});
+
 
 var routes = (
   <Router history={createBrowserHistory()}>
