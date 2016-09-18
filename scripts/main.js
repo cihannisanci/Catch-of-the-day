@@ -10,7 +10,25 @@ var createBrowserHistory = require('history/lib/createBrowserHistory');
 var History = ReactRouter.History;
 var helper = require('./helpers.js');
 
+
 var App = React.createClass({
+
+  getInitialState: function() {
+    return (
+      {
+        fishes: {},
+        order:{}
+      }
+    );
+  },
+
+  addFish: function(fish) {
+    var timestamp = new Date();
+    this.state.fishes['fish '+ timestamp] = fish;
+    this.setState({
+      fishes: this.state.fishes
+    });
+  },
 
   render: function() {
     return (
@@ -19,11 +37,12 @@ var App = React.createClass({
         <Header tagline='Fresh Seafood Market' />
       </div>
         <Order />
-        <Inventory />
+        <Inventory addFish={this.addFish} />
       </div>
     );
   }
 });
+
 
 var Header = React.createClass({
   render: function() {
@@ -52,7 +71,33 @@ var Order = React.createClass({
 var Inventory = React.createClass({
   render: function() {
     return (
-      <p>Inventory</p>
+      <div>
+        <p>Inventory</p>
+        <AddFishForm addFish={this.props.addFish} />
+      </div>
+    );
+  }
+
+});
+
+var AddFishForm = React.createClass({
+
+  myFunc: function(event) {
+    event.preventDefault();
+    var fish = {
+      name: this.refs.name.value,
+      price: this.refs.price.value
+    };
+    this.props.addFish(fish);
+  },
+
+  render: function() {
+    return(
+    <form onSubmit={this.myFunc}>
+      <input type='text' ref='name'></input>
+      <input type='text' ref='price'></input>
+      <input type='submit'></input>
+    </form>
     );
   }
 });
@@ -68,6 +113,7 @@ var NotFound = React.createClass({
 var StorePicker = React.createClass({
 
   mixins : [History],
+
   goToStore : function(event) {
     event.preventDefault();
     var storeId = this.refs.storeId.value;
