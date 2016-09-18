@@ -16,7 +16,7 @@ var App = React.createClass({
   getInitialState: function() {
     return {
         fishes: {},
-        order:{}
+        orders:{}
     };
   },
 
@@ -28,21 +28,58 @@ var App = React.createClass({
     });
   },
 
+  addOrder: function(key) {
+    this.state.orders[key] = this.state.orders[key] + 1 || 1;
+    this.setState({
+      orders: this.state.orders
+    });
+  },
+
   loadFishes: function() {
     this.setState({
       fishes: require('./sample-fishes.js')
     });
   },
 
+  renderFish: function(key) {
+    return <FishEntry key={key} index={key} fish={this.state.fishes[key]} addOrder={this.addOrder} />
+  }, 
+
   render: function() {
     return (
       <div className='catch-of-the-day'>
       <div className='menu'>
         <Header tagline='Fresh Seafood Market' />
+        <ul>
+          {Object.keys(this.state.fishes).map(this.renderFish)}
+        </ul>
       </div>
         <Order />
         <Inventory addFish={this.addFish} loadFishes={this.loadFishes} />
       </div>
+    );
+  }
+});
+
+var FishEntry = React.createClass({
+
+  onButtonClick: function() {
+    this.props.addOrder(this.props.index);
+  },
+
+  render: function() {
+    var buttonText = this.props.fish.status ? "Add To Order" : "Sold Out";
+    var isAvailable = this.props.fish.status === 'available' ? true : false;
+    return (
+      <li className="menu-fish">
+        <img src={this.props.fish.image} />
+        <h3 className='fish-name'>
+          {this.props.fish.name}
+          <span className='price'>{helper.formatPrice(this.props.fish.price)}</span>
+        </h3>
+        <p>{this.props.fish.desc}</p>
+        <button disabled={!isAvailable} onClick={this.onButtonClick}>{buttonText}</button>
+      </li>
     );
   }
 });
@@ -78,7 +115,7 @@ var Inventory = React.createClass({
       <div>
         <p>Inventory</p>
         <AddFishForm addFish={this.props.addFish} />
-        <button onClick={this.props.loadFishes}>Load Sample Fishes</button>
+        <button onClick={this.props.loadFishes}>Load Sample Fishess</button>
       </div>
     );
   }
