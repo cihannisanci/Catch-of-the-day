@@ -8,15 +8,24 @@
   <link rel="shortcut icon" href="http://facebook.github.io/react/favicon.ico">
 </head>
 <body>
-  
-    <input type="checkbox" id="fold">
-    <label for="fold">Fold</label>
+  <input type="checkbox" id="fold">
+  <label for="fold">Fold</label>
     
-    <div id="main">
+  <div id="main">
       <!-- This is where our React app will go -->
-    </div>
-
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyBlUmBB9KMD1R3X1C__UT3yecIqcB3qQt8",
+      authDomain: "catchoftheday-ea496.firebaseapp.com",
+      databaseURL: "https://catchoftheday-ea496.firebaseio.com",
+      storageBucket: "catchoftheday-ea496.appspot.com",
+      messagingSenderId: "484389155827"
+    };
+    firebase.initializeApp(config);
+  </script>
   <script src="/build/main.js"></script>
-
 </body>
 </html>

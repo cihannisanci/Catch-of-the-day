@@ -10,6 +10,9 @@ var createBrowserHistory = require('history/lib/createBrowserHistory');
 var History = ReactRouter.History;
 var helper = require('./helpers.js');
 
+var Rebase = require('re-base');
+var base = Rebase.createClass('https://catchoftheday-ea496.firebaseio.com/');
+
 
 var App = React.createClass({
 
@@ -18,6 +21,10 @@ var App = React.createClass({
         fishes: {},
         orders:{}
     };
+  },
+
+  componentDidMount: function() {
+    base.syncState(this.props.params.storeId + '/fishes');
   },
 
   addFish: function(fish) {
@@ -42,7 +49,7 @@ var App = React.createClass({
   },
 
   renderFish: function(key) {
-    return <FishEntry key={key} index={key} fish={this.state.fishes[key]} addOrder={this.addOrder} />
+    return <FishEntry key={key} index={key} fish={this.state.fishes[key]} orders={this.state.orders[key]} addOrder={this.addOrder} />
   }, 
 
   render: function() {
@@ -54,7 +61,7 @@ var App = React.createClass({
           {Object.keys(this.state.fishes).map(this.renderFish)}
         </ul>
       </div>
-        <Order />
+        <Order fishes={this.state.fishes} orders={this.state.orders} />
         <Inventory addFish={this.addFish} loadFishes={this.loadFishes} />
       </div>
     );
@@ -102,9 +109,51 @@ var Header = React.createClass({
 });
 
 var Order = React.createClass({
-  render: function() {
+
+  renderOrder: function(key) {
+
+    var fish = this.props.fishes[key];
+    var count = this.props.orders[key];
+
+    if(!fish) {
+      return <li key={key}>Sorry, this fish is no longer availble!!</li>
+    }
+
     return (
-      <p>Order</p>
+      <li>
+        {count}lbs
+        {fish.name}
+        <span className='price'>{helper.formatPrice(count * fish.price)}</span>
+      </li>
+    ); 
+  },
+
+  render: function() {
+     var orderIds = Object.keys(this.props.orders);
+
+     var total = orderIds.reduce((prevTotal, key) => {
+      var fish = this.props.fishes[key];
+      var count = this.props.orders[key];
+      var isAvailable = fish && fish.status === 'available';
+
+      if(isAvailable) {
+        return prevTotal + (count * parseInt(fish.price) || 0);
+      }
+
+      return prevTotal;
+     }, 0);
+
+    return (
+      <div className='order-wrap'>
+        <h2 className='order-title'>Your Order</h2>
+        <ul className='order'>
+          {orderIds.map(this.renderOrder)}
+          <li className='total'>
+            <strong>TOTAL</strong>
+            {helper.formatPrice(total)}
+          </li>
+        </ul>
+      </div>
     );
   }
 });
