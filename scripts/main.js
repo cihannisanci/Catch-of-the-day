@@ -12,7 +12,7 @@ var helper = require('./helpers.js');
 
 var Rebase = require('re-base');
 var base = Rebase.createClass('https://catchoftheday-ea496.firebaseio.com/');
-
+var firebase = require('firebase');
 
 var App = React.createClass({
 
@@ -23,9 +23,13 @@ var App = React.createClass({
     };
   },
 
-  componentDidMount: function() {
-    base.syncState(this.props.params.storeId + '/fishes');
+  componentMount: function() {
+    base.syncState(this.props.params.storeId + '/fishes', {
+      context:this,
+      state:'fishes'
+    });
   },
+
 
   addFish: function(fish) {
     var timestamp = (new Date()).getTime();
