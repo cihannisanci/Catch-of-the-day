@@ -1,2 +1,2 @@
 # Catch-of-the-day
-ReactJS top application for practicing.
+ReactJS toy application for practicing.
